@@ -363,6 +363,35 @@ describe('Integration', () => {
 
     assert.deepEqual(reconstructed, testData);
   });
+
+  it('POST /api/encode should return a valid LCF payload', async () => {
+    const { app } = require('../server');
+    const server = app.listen(0);
+
+    try {
+      const port = server.address().port;
+      const body = {
+        width: 2,
+        height: 2,
+        channels: 4,
+        bitDepth: 8,
+        colorSpace: 0,
+        data: [255, 0, 0, 255, 0, 255, 0, 255, 0, 0, 255, 255, 255, 255, 255, 255]
+      };
+
+      const response = await fetch(`http://127.0.0.1:${port}/api/encode`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      assert.equal(response.status, 200);
+      const buffer = Buffer.from(await response.arrayBuffer());
+      assert.equal(buffer.toString('ascii', 0, 4), 'LCF0');
+    } finally {
+      await new Promise((resolve) => server.close(resolve));
+    }
+  });
 });
 
 // ============================================================

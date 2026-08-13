@@ -236,11 +236,46 @@ Pan Offset: (${this.panX.toFixed(0)}, ${this.panY.toFixed(0)})
     this.showSuccess('JSON exported successfully');
   }
 
-  downloadLcf() {
+  async downloadLcf() {
     if (!this.currentImage) return;
 
-    this.showError('LcF encoding requires Node.js backend');
-    // In a full implementation, this would call a server endpoint to encode
+    try {
+      this.downloadLcfBtn.disabled = true;
+      this.downloadLcfBtn.textContent = 'Encoding...';
+
+      const payload = {
+        width: this.currentImage.width,
+        height: this.currentImage.height,
+        channels: 4,
+        bitDepth: 8,
+        colorSpace: 0,
+        data: Array.from(this.currentImage.imageData.data)
+      };
+
+      const response = await fetch('/api/encode', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+
+      const arrayBuffer = await response.arrayBuffer();
+      const blob = new Blob([arrayBuffer], { type: 'application/octet-stream' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'exported.lcf';
+      link.click();
+
+      this.showSuccess('LCF file downloaded successfully');
+    } catch (error) {
+      this.showError(`Failed to encode LCF: ${error.message}`);
+    } finally {
+      this.downloadLcfBtn.disabled = false;
+      this.downloadLcfBtn.textContent = 'Download as LCF';
+    }
   }
 
   zoom(factor) {
