@@ -19,6 +19,13 @@ LcF is a chunk‑based binary container format that supports:
 LcF is designed to be modular, extensible, and easy to implement across multiple languages and platforms.
 
 ---
+## Website
+LcF's website can be reached [here](https://lcf-mnay.onrender.com)
+
+
+You may have to wait ~0.30 minutes for the website to load if it has been inactive
+
+---
 
 ## Project Goals
 - Create a modern, efficient, open lossless image format
