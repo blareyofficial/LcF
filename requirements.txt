@@ -1,0 +1,19 @@
+# LcF - Python Dependencies
+# Install with: pip install -r requirements.txt
+
+# Image processing
+Pillow>=9.0.0
+
+# Numerical computing
+numpy>=1.21.0
+
+# Optional: Deep learning (for neural compression research)
+# torch>=1.10.0
+# tensorflow>=2.8.0
+
+# Optional: CLI tools
+# click>=8.0.0
+# tqdm>=4.60.0
+
+# Development
+pytest>=7.0.0

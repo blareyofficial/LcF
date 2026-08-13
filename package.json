@@ -1,0 +1,43 @@
+{
+  "name": "lcf-format",
+  "version": "1.0.0",
+  "description": "LcF - Lossless Compression Format: A modern, open-source lossless image format",
+  "main": "encoder/index.js",
+  "scripts": {
+    "test": "node tests/test.js",
+    "encode": "node -e \"require('./encoder').encode(process.argv[2], process.argv[3])\"",
+    "decode": "node -e \"require('./decoder').decode(process.argv[2], process.argv[3])\"",
+    "inspect": "node -e \"require('./decoder').inspect(process.argv[2])\"",
+    "start-viewer": "cd viewer && python -m http.server 8000"
+  },
+  "keywords": [
+    "lcf",
+    "image",
+    "compression",
+    "lossless",
+    "format",
+    "png",
+    "webp",
+    "jpeg-xl"
+  ],
+  "author": "LcF Community",
+  "license": "GPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lcf-format/lcf.git"
+  },
+  "homepage": "https://github.com/lcf-format/lcf",
+  "bugs": {
+    "url": "https://github.com/lcf-format/lcf/issues"
+  },
+  "dependencies": {
+    "pngjs": "^6.0.0",
+    "jpeg-js": "^0.4.4"
+  },
+  "devDependencies": {
+    "eslint": "^8.0.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

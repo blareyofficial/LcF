@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LcF Viewer - Lossless Compression Format</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🖼️ LcF Viewer</h1>
+            <p>Lossless Compression Format Image Viewer</p>
+        </header>
+
+        <main>
+            <!-- Upload Section -->
+            <section class="upload-section">
+                <div class="upload-area" id="uploadArea">
+                    <input type="file" id="fileInput" accept=".lcf,.png,.jpg,.jpeg,.webp" />
+                    <p class="upload-text">Drag and drop LcF, PNG, or JPEG files here</p>
+                    <button id="selectButton" class="btn btn-primary">Select File</button>
+                </div>
+            </section>
+
+            <div class="content-grid">
+                <!-- Canvas Display -->
+                <section class="viewer-section">
+                    <h2>Image Preview</h2>
+                    <div class="canvas-container">
+                        <canvas id="canvas"></canvas>
+                    </div>
+                    <div class="controls">
+                        <button id="zoomInBtn" class="btn btn-small">🔍+ Zoom In</button>
+                        <button id="zoomOutBtn" class="btn btn-small">🔍- Zoom Out</button>
+                        <button id="resetZoomBtn" class="btn btn-small">↺ Reset</button>
+                    </div>
+                </section>
+
+                <!-- Info Panel -->
+                <section class="info-section">
+                    <h2>Image Information</h2>
+                    <div id="infoPanel" class="info-panel">
+                        <p>No image loaded</p>
+                    </div>
+
+                    <h3>Export Options</h3>
+                    <div class="export-options">
+                        <button id="exportPngBtn" class="btn btn-secondary" disabled>Export as PNG</button>
+                        <button id="exportJsonBtn" class="btn btn-secondary" disabled>Export as JSON</button>
+                        <button id="downloadLcfBtn" class="btn btn-secondary" disabled>Download as LcF</button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Metadata Section -->
+            <section id="metadataSection" class="metadata-section" style="display: none;">
+                <h2>Metadata</h2>
+                <div id="metadataPanel" class="metadata-panel"></div>
+            </section>
+
+            <!-- Animation Section -->
+            <section id="animationSection" class="animation-section" style="display: none;">
+                <h2>Animation</h2>
+                <div class="animation-controls">
+                    <button id="playBtn" class="btn btn-secondary">▶️ Play</button>
+                    <button id="pauseBtn" class="btn btn-secondary" disabled>⏸️ Pause</button>
+                    <input type="range" id="frameSlider" min="0" max="100" value="0" class="slider">
+                    <span id="frameCounter">0/0</span>
+                </div>
+            </section>
+
+            <!-- Performance Stats -->
+            <section class="stats-section">
+                <h2>Performance</h2>
+                <div id="statsPanel" class="stats-panel">
+                    <p>File size: <span id="fileSize">-</span></p>
+                    <p>Decode time: <span id="decodeTime">-</span></p>
+                    <p>Compression ratio: <span id="compressionRatio">-</span></p>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>LcF — Open-source Lossless Compression Format (GPL-3.0)</p>
+        </footer>
+    </div>
+
+    <script src="viewer.js"></script>
+</body>
+</html>
