@@ -392,6 +392,43 @@ describe('Integration', () => {
       await new Promise((resolve) => server.close(resolve));
     }
   });
+
+  it('POST /api/decode should decode LCF back to image data', async () => {
+    const { app } = require('../server');
+    const encoder_module = require('../encoder');
+    const server = app.listen(0);
+
+    try {
+      const port = server.address().port;
+      const testData = [255, 0, 0, 255, 0, 255, 0, 255, 0, 0, 255, 255, 255, 255, 255, 255];
+
+      // First encode
+      const lcfData = await encoder_module.encodeBuffer(Buffer.from(testData), {
+        width: 2,
+        height: 2,
+        channels: 4,
+        bitDepth: 8,
+        colorSpace: 0
+      });
+
+      // Then decode via API
+      const response = await fetch(`http://127.0.0.1:${port}/api/decode`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/octet-stream' },
+        body: lcfData
+      });
+
+      assert.equal(response.status, 200);
+      const decoded = await response.json();
+      
+      assert.equal(decoded.width, 2);
+      assert.equal(decoded.height, 2);
+      assert.equal(decoded.channels, 4);
+      assert.deepEqual(decoded.data, testData);
+    } finally {
+      await new Promise((resolve) => server.close(resolve));
+    }
+  });
 });
 
 // ============================================================

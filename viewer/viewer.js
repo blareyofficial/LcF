@@ -142,10 +142,42 @@ class LcfViewer {
   }
 
   async loadLcf(data) {
-    // This would require the decoder library to be available in the browser
-    // For now, we'll show a placeholder
-    this.showError('LcF decoding requires Node.js backend or WASM implementation');
-    // In a full implementation, this would call a server endpoint or WASM decoder
+    try {
+      // Send binary LCF data to server for decoding
+      const response = await fetch('/api/decode', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/octet-stream' },
+        body: data
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+
+      const decoded = await response.json();
+      const { width, height, channels, data: pixelData } = decoded;
+
+      // Create image data
+      this.canvas.width = width;
+      this.canvas.height = height;
+
+      const imageData = this.ctx.createImageData(width, height);
+      imageData.data.set(pixelData);
+      this.ctx.putImageData(imageData, 0, 0);
+
+      this.currentImage = {
+        width,
+        height,
+        imageData
+      };
+
+      this.resetZoom();
+      this.updateInfoPanel();
+      this.enableExportButtons();
+      this.showSuccess(`Decoded LCF (${width}×${height})`);
+    } catch (error) {
+      this.showError(`Failed to decode LCF: ${error.message}`);
+    }
   }
 
   async loadImage(file) {

@@ -1,11 +1,13 @@
 const express = require('express');
 const path = require('path');
 const encoder = require('./encoder');
+const decoder = require('./decoder');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json({ limit: '20mb' }));
+app.use(express.raw({ type: 'application/octet-stream', limit: '20mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
@@ -59,6 +61,33 @@ app.post('/api/encode', async (req, res) => {
     res.send(lcfData);
   } catch (error) {
     console.error('[API] Encode error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/decode', async (req, res) => {
+  try {
+    // req.body is already a Buffer from express.raw middleware
+    const lcfData = req.body;
+
+    if (!lcfData || lcfData.length === 0) {
+      return res.status(400).json({ error: 'No LCF data provided' });
+    }
+
+    // Decode LCF
+    const decoded = await decoder.decodeBuffer(lcfData);
+
+    // Convert pixel buffer to array for JSON serialization
+    const pixelArray = Array.from(decoded.pixels);
+
+    res.json({
+      width: decoded.width,
+      height: decoded.height,
+      channels: decoded.channels,
+      data: pixelArray
+    });
+  } catch (error) {
+    console.error('[API] Decode error:', error);
     res.status(500).json({ error: error.message });
   }
 });
