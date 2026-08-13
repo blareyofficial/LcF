@@ -92,6 +92,40 @@ app.post('/api/decode', async (req, res) => {
   }
 });
 
+app.post('/api/convert', async (req, res) => {
+  try {
+    const { width, height, channels, bitDepth, colorSpace, data, toFormat } = req.body;
+
+    if (!width || !height || !channels || !data || !toFormat) {
+      return res.status(400).json({ 
+        error: 'Missing required fields: width, height, channels, data, toFormat' 
+      });
+    }
+
+    const pixelBuffer = Buffer.from(data);
+
+    if (toFormat === 'lcf') {
+      // Convert to LCF format
+      const lcfData = await encoder.encodeBuffer(pixelBuffer, {
+        width,
+        height,
+        channels,
+        bitDepth: bitDepth || 8,
+        colorSpace: colorSpace !== undefined ? colorSpace : 0
+      });
+
+      res.setHeader('Content-Type', 'application/octet-stream');
+      res.setHeader('Content-Disposition', 'attachment; filename="converted.lcf"');
+      res.send(lcfData);
+    } else {
+      res.status(400).json({ error: `Unsupported format: ${toFormat}` });
+    }
+  } catch (error) {
+    console.error('[API] Convert error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.use((req, res) => {
   res.status(404).json({ error: 'Not found' });
 });

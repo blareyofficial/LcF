@@ -33,6 +33,7 @@ class LcfViewer {
     this.resetZoomBtn = document.getElementById('resetZoomBtn');
 
     this.exportPngBtn = document.getElementById('exportPngBtn');
+    this.exportJpegBtn = document.getElementById('exportJpegBtn');
     this.exportJsonBtn = document.getElementById('exportJsonBtn');
     this.downloadLcfBtn = document.getElementById('downloadLcfBtn');
 
@@ -65,6 +66,7 @@ class LcfViewer {
 
     // Export buttons
     this.exportPngBtn.addEventListener('click', () => this.exportPng());
+    this.exportJpegBtn.addEventListener('click', () => this.exportJpeg());
     this.exportJsonBtn.addEventListener('click', () => this.exportJson());
     this.downloadLcfBtn.addEventListener('click', () => this.downloadLcf());
 
@@ -245,6 +247,17 @@ Pan Offset: (${this.panX.toFixed(0)}, ${this.panY.toFixed(0)})
     link.click();
 
     this.showSuccess('PNG exported successfully');
+  }
+
+  exportJpeg() {
+    if (!this.currentImage) return;
+
+    const link = document.createElement('a');
+    link.href = this.canvas.toDataURL('image/jpeg', 0.95);
+    link.download = 'exported.jpg';
+    link.click();
+
+    this.showSuccess('JPEG exported successfully');
   }
 
   exportJson() {
