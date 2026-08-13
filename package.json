@@ -4,6 +4,7 @@
   "description": "LcF - Lossless Compression Format: A modern, open-source lossless image format",
   "main": "encoder/index.js",
   "scripts": {
+    "start": "node server.js",
     "test": "node tests/test.js",
     "encode": "node -e \"require('./encoder').encode(process.argv[2], process.argv[3])\"",
     "decode": "node -e \"require('./decoder').decode(process.argv[2], process.argv[3])\"",
@@ -31,6 +32,7 @@
     "url": "https://github.com/lcf-format/lcf/issues"
   },
   "dependencies": {
+    "express": "^4.19.2",
     "pngjs": "^6.0.0",
     "jpeg-js": "^0.4.4"
   },
