@@ -6,6 +6,11 @@
     <title>LcF Viewer - Lossless Compression Format</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script>
+function enableSelectButton() {
+  document.getElementById("selectButton").disabled = false;
+}
+</script>
 </head>
 <body>
     <div class="container">
@@ -19,9 +24,13 @@
             <section class="upload-section">
                 <div class="upload-area" id="uploadArea">
                     <input type="file" id="fileInput" accept=".lcf,.png,.jpg,.jpeg,.webp" />
-                    <div class="g-recaptcha" data-sitekey="6Lc8nYwtAAAAADqwpKeSaxAsuLBZhyA9ZZz8-xYi"></div>
+                   <div class="g-recaptcha"
+     data-sitekey="6Lc8nYwtAAAAADqwpKeSaxAsuLBZhyA9ZZz8-xYi"
+     data-callback="enableSelectButton">
+</div>
+
                     <p class="upload-text">Drag and drop LcF, PNG, or JPEG files here</p>
-                    <button id="selectButton" class="btn btn-primary">Select File</button>
+                    <button id="selectButton" class="btn btn-primary" disabled>Select File</button>
                 </div>
             </section>
 
