@@ -135,3 +135,32 @@ app.listen(PORT, () => {
 });
 
 module.exports = { app };
+
+const bodyParser = require("body-parser");
+const axios = require("axios");
+
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.post("/submit", async (req, res) => {
+  const token = req.body["g-recaptcha-response"];
+  const secret = process.env.RECAPTCHA_SECRET;
+
+  if (!token) {
+    return res.status(400).send("Captcha missing");
+  }
+
+  try {
+    const googleURL = `https://www.google.com/recaptcha/api/siteverify?secret=${secret}&response=${token}`;
+    const response = await axios.post(googleURL);
+
+    if (response.data.success) {
+      return res.send("Captcha passed!");
+    } else {
+      return res.status(400).send("Captcha failed");
+    }
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send("Verification error");
+  }
+});
+
