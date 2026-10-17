@@ -443,9 +443,9 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  lcf-cli.py encode image.png image.lcf
-  lcf-cli.py decode image.lcf image.png
-  lcf-cli.py inspect image.lcf
+  lcf_cli.py encode image.png image.lcf
+  lcf_cli.py decode image.lcf image.png
+  lcf_cli.py inspect image.lcf
         """
     )
     

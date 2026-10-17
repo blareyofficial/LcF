@@ -19,11 +19,18 @@ LcF is a chunk‑based binary container format that supports:
 LcF is designed to be modular, extensible, and easy to implement across multiple languages and platforms.
 
 ---
-## Website
-LcF's website can be reached [here](https://lcf-mnay.onrender.com)
+## Cloudflare Pages
 
+The viewer is deployed as a Cloudflare Pages project. The Pages Functions live in `/functions`, and Wrangler serves the static files from `/viewer`.
 
-You may have to wait ~0.30 minutes for the website to load if it has been inactive
+```bash
+npm install
+npm start
+```
+
+Connect the repository to Cloudflare Pages with no build command and `viewer` as the build output directory. To deploy from the command line, run `npm run deploy` after authenticating Wrangler and creating the `lcf-viewer` Pages project.
+
+Set the reCAPTCHA v2 server secret as a Pages secret named `RECAPTCHA_API_KEY` in the Cloudflare dashboard, or run `npx wrangler pages secret put RECAPTCHA_API_KEY`. Never put the secret in viewer code or commit it.
 
 ---
 
@@ -38,31 +45,20 @@ You may have to wait ~0.30 minutes for the website to load if it has been inacti
 ---
 
 ## Repository Structure
-/spec  
- lcf-spec.md — Full technical specification of the LcF format
-
-/encoder  
- index.js — Main encoder entry point  
- filters.js — Predictive filters  
- entropy.js — Entropy compression  
- chunks.js — Chunk writer  
- container.js — Binary container builder
-
-/decoder  
- index.js — Main decoder entry point  
- parser.js — Binary parser  
- renderer.js — Pixel reconstruction  
- chunks.js — Chunk reader
+/functions
+ api/ — Cloudflare Pages API routes
+ _shared/ — Shared route helpers
+ _lib/encoder/ — Encoder and codec implementation
+ _lib/decoder/ — Decoder and pixel reconstruction
+ _lib/tools/ — Python utilities
+ _lib/tests/ — Test suite
+ _lib/spec/ — Format specification
+ _lib/examples/ — Usage examples
 
 /viewer  
  index.html — Browser viewer UI  
  viewer.js — LcF rendering logic  
  styles.css — Viewer styling
-
-/tools  
- lcf-cli.py — Command‑line encoder/decoder  
- neural-compress.py — Neural compression experiments  
- batch-convert.py — Batch conversion utilities
 
 README.md  
 LICENSE (GPL‑3.0)
@@ -145,6 +141,8 @@ Python tooling includes:
 - Neural compression experiments
 - Automated tests
 - Compression benchmarking
+
+Python tools require Python 3.8+ and the `Pillow` and `numpy` packages. Install them with `python -m pip install Pillow numpy`. The test suite is Node.js-based and does not require `pytest`.
 
 ---
 

@@ -29,7 +29,7 @@ await decoder.decode('sample.lcf', 'output.png', 'png');
 ### 3. Inspect LcF File (Python)
 
 ```bash
-python tools/lcf-cli.py inspect sample.lcf
+python functions/_lib/tools/lcf_cli.py inspect sample.lcf
 ```
 
 Output:
@@ -60,7 +60,7 @@ Chunk 2: PREV
 ### 4. Batch Convert Images (Python)
 
 ```bash
-python tools/batch-convert.py ./images ./lcf_output --recursive
+python functions/_lib/tools/batch-convert.py ./images ./lcf_output --recursive
 ```
 
 ## Example Images
@@ -88,7 +88,7 @@ python tools/batch-convert.py ./images ./lcf_output --recursive
 ### Python CLI - Encode with Custom Filter
 
 ```bash
-python tools/lcf-cli.py encode photo.jpg photo.lcf --filter 3 --compression-level 9
+python functions/_lib/tools/lcf_cli.py encode photo.jpg photo.lcf --filter 3 --compression-level 9
 ```
 
 Options:
@@ -102,26 +102,26 @@ Options:
 
 ```bash
 # Decode to PNG
-python tools/lcf-cli.py decode image.lcf output.png
+python functions/_lib/tools/lcf_cli.py decode image.lcf output.png
 
 # Inspect file info
-python tools/lcf-cli.py inspect image.lcf
+python functions/_lib/tools/lcf_cli.py inspect image.lcf
 
 # Get file statistics
-python tools/lcf-cli.py inspect image.lcf > statistics.txt
+python functions/_lib/tools/lcf_cli.py inspect image.lcf > statistics.txt
 ```
 
 ### Neural Compression Experiment
 
 ```bash
 # Run autoencoder compression experiment
-python tools/neural-compress.py photo.jpg --model autoencoder --latent-dim 256 --epochs 100
+python functions/_lib/tools/neural-compress.py photo.jpg --model autoencoder --latent-dim 256 --epochs 100
 
 # Run GAN-based compression
-python tools/neural-compress.py photo.jpg --model gan --learning-rate 0.0002
+python functions/_lib/tools/neural-compress.py photo.jpg --model gan --learning-rate 0.0002
 
 # Run diffusion model experiment
-python tools/neural-compress.py photo.jpg --model diffusion --epochs 1000
+python functions/_lib/tools/neural-compress.py photo.jpg --model diffusion --epochs 1000
 ```
 
 Results are saved in `ncf_results/` directory with:
@@ -146,16 +146,16 @@ Results are saved in `ncf_results/` directory with:
 
 ```bash
 # Single file
-time python tools/lcf-cli.py encode large.png large.lcf
+time python functions/_lib/tools/lcf_cli.py encode large.png large.lcf
 
 # Batch processing
-time python tools/batch-convert.py ./images ./output --recursive
+time python functions/_lib/tools/batch-convert.py ./images ./output --recursive
 ```
 
 ### Decode Performance
 
 ```javascript
-const decoder = require('./decoder');
+const decoder = require('../decoder');
 const fs = require('fs').promises;
 
 const startTime = performance.now();
@@ -178,7 +178,7 @@ Open `viewer/index.html` in a web browser to:
 
 ```bash
 # Run Node.js test suite
-node tests/test.js
+npm test
 
 # Expected output:
 # ============================================================
@@ -193,17 +193,17 @@ node tests/test.js
 ## Project Structure
 
 ```
-examples/
+functions/_lib/examples/
   README.md (this file)
   test-pattern.png (256×256 test pattern)
   photograph.jpg (1024×768 photo)
   logo.png (512×512 logo)
   
-tests/
+functions/_lib/tests/
   test.js (comprehensive test suite)
   
-tools/
-  lcf-cli.py (command-line tool)
+functions/_lib/tools/
+  lcf_cli.py (command-line tool)
   batch-convert.py (batch processor)
   neural-compress.py (neural compression)
   

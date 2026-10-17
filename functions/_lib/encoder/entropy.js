@@ -3,8 +3,6 @@
  * Implements zlib and custom Huffman entropy coding
  */
 
-const zlib = require('zlib');
-
 /**
  * Compress data using zlib deflate (Method 0)
  * @param {Buffer} data - Raw data to compress
@@ -12,12 +10,8 @@ const zlib = require('zlib');
  * @returns {Promise<Buffer>} Compressed data
  */
 async function compressZlib(data, level = 9) {
-  return new Promise((resolve, reject) => {
-    zlib.deflate(data, { level }, (err, compressed) => {
-      if (err) reject(err);
-      else resolve(compressed);
-    });
-  });
+  const stream = new Blob([data]).stream().pipeThrough(new CompressionStream('deflate'));
+  return Buffer.from(await new Response(stream).arrayBuffer());
 }
 
 /**
@@ -26,12 +20,8 @@ async function compressZlib(data, level = 9) {
  * @returns {Promise<Buffer>} Decompressed data
  */
 async function decompressZlib(compressed) {
-  return new Promise((resolve, reject) => {
-    zlib.inflate(compressed, (err, decompressed) => {
-      if (err) reject(err);
-      else resolve(decompressed);
-    });
-  });
+  const stream = new Blob([compressed]).stream().pipeThrough(new DecompressionStream('deflate'));
+  return Buffer.from(await new Response(stream).arrayBuffer());
 }
 
 /**

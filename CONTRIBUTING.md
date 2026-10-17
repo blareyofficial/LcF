@@ -29,18 +29,18 @@ cd lcf
 # Install Node.js dependencies
 npm install
 
-# Install Python dependencies
-pip install -r requirements.txt
+# Install Python tooling dependencies
+python -m pip install Pillow numpy
 ```
 
 ### Build & Test
 
 ```bash
 # Run tests
-node tests/test.js
+npm test
 
-# Python CLI test
-python tools/lcf-cli.py inspect --help
+# Python CLI check
+python functions/_lib/tools/lcf_cli.py inspect --help
 
 # Build documentation
 # (if applicable)
@@ -70,8 +70,8 @@ Found a bug? Please report it!
 **Title:** Decoder fails on PNG with transparency
 
 **Steps to Reproduce:**
-1. Encode transparent PNG: `python lcf-cli.py encode test.png test.lcf`
-2. Decode back: `python lcf-cli.py decode test.lcf output.png`
+1. Encode transparent PNG: `python functions/_lib/tools/lcf_cli.py encode test.png test.lcf`
+2. Decode back: `python functions/_lib/tools/lcf_cli.py decode test.lcf output.png`
 3. Compare alpha channel
 
 **Expected:** Alpha channel preserved exactly
@@ -237,12 +237,12 @@ How to test these changes:
 
 ```bash
 # JavaScript tests
-node tests/test.js
+npm test
 
 # Python CLI tests (manual)
-python tools/lcf-cli.py encode test.png test.lcf
-python tools/lcf-cli.py decode test.lcf output.png
-python tools/lcf-cli.py inspect test.lcf
+python functions/_lib/tools/lcf_cli.py encode test.png test.lcf
+python functions/_lib/tools/lcf_cli.py decode test.lcf output.png
+python functions/_lib/tools/lcf_cli.py inspect test.lcf
 ```
 
 ### Adding Tests
@@ -250,7 +250,7 @@ python tools/lcf-cli.py inspect test.lcf
 For new features, add tests:
 
 ```javascript
-// In tests/test.js
+// In functions/_lib/tests/test.js
 
 describe('New Feature', () => {
   it('should do something', () => {
@@ -270,13 +270,13 @@ For performance-sensitive changes:
 
 ```bash
 # Time encoding
-time python tools/lcf-cli.py encode large.png large.lcf
+time python functions/_lib/tools/lcf_cli.py encode large.png large.lcf
 
 # Profile with time
-time node tests/test.js
+time npm test
 
 # Memory usage
-node --max-old-space-size=4096 tests/test.js
+node --max-old-space-size=4096 functions/_lib/tests/test.js
 ```
 
 ---
@@ -285,9 +285,9 @@ node --max-old-space-size=4096 tests/test.js
 
 ### Updating Docs
 
-- **Specification**: Update [spec/lcf-spec.md](spec/lcf-spec.md) for format changes
+- **Specification**: Update [lcf-spec.md](functions/_lib/spec/lcf-spec.md) for format changes
 - **API docs**: Add JSDoc/docstrings for new functions
-- **Examples**: Add example usage in [examples/README.md](examples/README.md)
+- **Examples**: Add example usage in [README.md](functions/_lib/examples/README.md)
 - **README**: Update [README.md](README.md) for major changes
 
 ### Writing Good Documentation
@@ -373,10 +373,10 @@ When you submit a PR:
 
 ### LcF Internals
 
-- [Binary Specification](spec/lcf-spec.md) — Complete format details
-- [Filter Algorithms](encoder/filters.js) — Predictive filter implementation
-- [Entropy Coding](encoder/entropy.js) — Compression techniques
-- [Container Format](encoder/container.js) — File structure
+- [Binary Specification](functions/_lib/spec/lcf-spec.md) — Complete format details
+- [Filter Algorithms](functions/_lib/encoder/filters.js) — Predictive filter implementation
+- [Entropy Coding](functions/_lib/encoder/entropy.js) — Compression techniques
+- [Container Format](functions/_lib/encoder/container.js) — File structure
 
 ### Related Formats
 

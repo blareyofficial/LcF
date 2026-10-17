@@ -2,14 +2,15 @@
   "name": "lcf-format",
   "version": "1.0.0",
   "description": "LcF - Lossless Compression Format: A modern, open-source lossless image format",
-  "main": "encoder/index.js",
+  "main": "functions/_lib/encoder/index.js",
   "scripts": {
-    "start": "node server.js",
-    "test": "node tests/test.js",
-    "encode": "node -e \"require('./encoder').encode(process.argv[2], process.argv[3])\"",
-    "decode": "node -e \"require('./decoder').decode(process.argv[2], process.argv[3])\"",
-    "inspect": "node -e \"require('./decoder').inspect(process.argv[2])\"",
-    "start-viewer": "cd viewer && python -m http.server 8000"
+    "start": "wrangler pages dev",
+    "deploy": "wrangler pages deploy",
+    "test": "node functions/_lib/tests/test.js",
+    "encode": "node -e \"require('./functions/_lib/encoder').encode(process.argv[2], process.argv[3])\"",
+    "decode": "node -e \"require('./functions/_lib/decoder').decode(process.argv[2], process.argv[3])\"",
+    "inspect": "node -e \"require('./functions/_lib/decoder').inspect(process.argv[2])\"",
+    "start-viewer": "wrangler pages dev"
   },
   "keywords": [
     "lcf",
@@ -32,15 +33,14 @@
     "url": "https://github.com/lcf-format/lcf/issues"
   },
   "dependencies": {
-    "express": "^4.19.2",
     "pngjs": "^6.0.0",
-    "jpeg-js": "^0.4.4",
-    "axios": "^1.6.0"
+    "jpeg-js": "^0.4.4"
   },
   "devDependencies": {
-    "eslint": "^8.0.0"
+    "eslint": "^8.0.0",
+    "wrangler": "^4.0.0"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=18.0.0"
   }
 }

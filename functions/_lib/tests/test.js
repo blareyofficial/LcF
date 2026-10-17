@@ -14,6 +14,7 @@ const chunks = require('../encoder/chunks');
 let testCount = 0;
 let passCount = 0;
 let failCount = 0;
+const pendingTests = [];
 
 /**
  * Test harness
@@ -27,9 +28,20 @@ function describe(name, callback) {
 function it(name, callback) {
   testCount++;
   try {
-    callback();
-    passCount++;
-    console.log(`  ✓ ${name}`);
+    const result = callback();
+    if (result && typeof result.then === 'function') {
+      pendingTests.push(result.then(() => {
+        passCount++;
+        console.log(`  ✓ ${name}`);
+      }).catch((error) => {
+        failCount++;
+        console.log(`  ✗ ${name}`);
+        console.log(`    Error: ${error.message}`);
+      }));
+    } else {
+      passCount++;
+      console.log(`  ✓ ${name}`);
+    }
   } catch (error) {
     failCount++;
     console.log(`  ✗ ${name}`);
@@ -365,69 +377,56 @@ describe('Integration', () => {
   });
 
   it('POST /api/encode should return a valid LCF payload', async () => {
-    const { app } = require('../server');
-    const server = app.listen(0);
+    const { onRequestPost } = await import('../../api/encode.js');
+    const body = {
+      width: 2,
+      height: 2,
+      channels: 4,
+      bitDepth: 8,
+      colorSpace: 0,
+      data: [255, 0, 0, 255, 0, 255, 0, 255, 0, 0, 255, 255, 255, 255, 255, 255]
+    };
 
-    try {
-      const port = server.address().port;
-      const body = {
-        width: 2,
-        height: 2,
-        channels: 4,
-        bitDepth: 8,
-        colorSpace: 0,
-        data: [255, 0, 0, 255, 0, 255, 0, 255, 0, 0, 255, 255, 255, 255, 255, 255]
-      };
-
-      const response = await fetch(`http://127.0.0.1:${port}/api/encode`, {
+    const response = await onRequestPost({
+      request: new Request('https://example.com/api/encode', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
-      });
+      })
+    });
 
-      assert.equal(response.status, 200);
-      const buffer = Buffer.from(await response.arrayBuffer());
-      assert.equal(buffer.toString('ascii', 0, 4), 'LCF0');
-    } finally {
-      await new Promise((resolve) => server.close(resolve));
-    }
+    assert.equal(response.status, 200);
+    const buffer = Buffer.from(await response.arrayBuffer());
+    assert.equal(buffer.toString('ascii', 0, 4), 'LCF0');
   });
 
   it('POST /api/decode should decode LCF back to image data', async () => {
-    const { app } = require('../server');
+    const { onRequestPost } = await import('../../api/decode.js');
     const encoder_module = require('../encoder');
-    const server = app.listen(0);
+    const testData = [255, 0, 0, 255, 0, 255, 0, 255, 0, 0, 255, 255, 255, 255, 255, 255];
 
-    try {
-      const port = server.address().port;
-      const testData = [255, 0, 0, 255, 0, 255, 0, 255, 0, 0, 255, 255, 255, 255, 255, 255];
+    const lcfData = await encoder_module.encodeBuffer(Buffer.from(testData), {
+      width: 2,
+      height: 2,
+      channels: 4,
+      bitDepth: 8,
+      colorSpace: 0
+    });
 
-      // First encode
-      const lcfData = await encoder_module.encodeBuffer(Buffer.from(testData), {
-        width: 2,
-        height: 2,
-        channels: 4,
-        bitDepth: 8,
-        colorSpace: 0
-      });
-
-      // Then decode via API
-      const response = await fetch(`http://127.0.0.1:${port}/api/decode`, {
+    const response = await onRequestPost({
+      request: new Request('https://example.com/api/decode', {
         method: 'POST',
         headers: { 'Content-Type': 'application/octet-stream' },
         body: lcfData
-      });
+      })
+    });
 
-      assert.equal(response.status, 200);
-      const decoded = await response.json();
-      
-      assert.equal(decoded.width, 2);
-      assert.equal(decoded.height, 2);
-      assert.equal(decoded.channels, 4);
-      assert.deepEqual(decoded.data, testData);
-    } finally {
-      await new Promise((resolve) => server.close(resolve));
-    }
+    assert.equal(response.status, 200);
+    const decoded = await response.json();
+    assert.equal(decoded.width, 2);
+    assert.equal(decoded.height, 2);
+    assert.equal(decoded.channels, 4);
+    assert.deepEqual(decoded.data, testData);
   });
 });
 
@@ -435,12 +434,14 @@ describe('Integration', () => {
 // Test Summary
 // ============================================================
 
-console.log('\n' + '='.repeat(50));
-console.log('Test Summary');
-console.log('='.repeat(50));
-console.log(`Total tests: ${testCount}`);
-console.log(`Passed: ${passCount} ✓`);
-console.log(`Failed: ${failCount} ✗`);
-console.log(`Pass rate: ${((passCount/testCount)*100).toFixed(1)}%`);
+Promise.all(pendingTests).then(() => {
+  console.log('\n' + '='.repeat(50));
+  console.log('Test Summary');
+  console.log('='.repeat(50));
+  console.log(`Total tests: ${testCount}`);
+  console.log(`Passed: ${passCount} ✓`);
+  console.log(`Failed: ${failCount} ✗`);
+  console.log(`Pass rate: ${((passCount / testCount) * 100).toFixed(1)}%`);
 
-process.exit(failCount > 0 ? 1 : 0);
+  process.exitCode = failCount > 0 ? 1 : 0;
+});

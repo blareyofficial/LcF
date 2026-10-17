@@ -7,8 +7,23 @@
     <link rel="stylesheet" href="styles.css">
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script>
-function enableSelectButton() {
-  document.getElementById("selectButton").disabled = false;
+async function enableSelectButton() {
+    const selectButton = document.getElementById("selectButton");
+    const verification = new FormData();
+    verification.append("g-recaptcha-response", grecaptcha.getResponse());
+    selectButton.textContent = "Verifying...";
+
+    try {
+        const response = await fetch("/submit", { method: "POST", body: verification });
+        if (!response.ok) throw new Error("Captcha verification failed");
+        selectButton.disabled = false;
+    } catch (error) {
+        console.error(error);
+        window.alert("Captcha verification failed. Please try again.");
+        grecaptcha.reset();
+    } finally {
+        selectButton.textContent = "Select File";
+    }
 }
 </script>
 </head>
@@ -25,7 +40,7 @@ function enableSelectButton() {
                 <div class="upload-area" id="uploadArea">
                     <input type="file" id="fileInput" accept=".lcf,.png,.jpg,.jpeg,.webp" />
                    <div class="g-recaptcha"
-     data-sitekey="6Lc8nYwtAAAAADqwpKeSaxAsuLBZhyA9ZZz8-xYi"
+    data-sitekey="6LdwqvMtAAAAAMwFye0twTaDgfc4Ffa2hRE0ZL1H"
      data-callback="enableSelectButton">
 </div>
 
@@ -99,5 +114,9 @@ function enableSelectButton() {
     </div>
 
     <script src="viewer.js"></script>
+    <a class="olyra-credit" href="https://olyrafoundation.env.pm" target="_blank" rel="noopener noreferrer" aria-label="Made by Olyra Foundation">
+        <img src="https://olyrafoundation.env.pm/OlyraLogo.svg" alt="Olyra logo">
+        <span>Made by <strong>Olyra</strong></span>
+    </a>
 </body>
 </html>
