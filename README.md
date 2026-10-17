@@ -30,8 +30,6 @@ npm start
 
 Connect the repository to Cloudflare Pages with no build command and `viewer` as the build output directory. To deploy from the command line, run `npm run deploy` after authenticating Wrangler and creating the `lcf-viewer` Pages project.
 
-Set the reCAPTCHA v2 server secret as a Pages secret named `RECAPTCHA_API_KEY` in the Cloudflare dashboard, or run `npx wrangler pages secret put RECAPTCHA_API_KEY`. Never put the secret in viewer code or commit it.
-
 ---
 
 ## Project Goals

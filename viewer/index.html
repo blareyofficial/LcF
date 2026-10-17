@@ -5,27 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LcF Viewer - Lossless Compression Format</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    <script>
-async function enableSelectButton() {
-    const selectButton = document.getElementById("selectButton");
-    const verification = new FormData();
-    verification.append("g-recaptcha-response", grecaptcha.getResponse());
-    selectButton.textContent = "Verifying...";
-
-    try {
-        const response = await fetch("/submit", { method: "POST", body: verification });
-        if (!response.ok) throw new Error("Captcha verification failed");
-        selectButton.disabled = false;
-    } catch (error) {
-        console.error(error);
-        window.alert("Captcha verification failed. Please try again.");
-        grecaptcha.reset();
-    } finally {
-        selectButton.textContent = "Select File";
-    }
-}
-</script>
 </head>
 <body>
     <div class="container">
@@ -39,13 +18,8 @@ async function enableSelectButton() {
             <section class="upload-section">
                 <div class="upload-area" id="uploadArea">
                     <input type="file" id="fileInput" accept=".lcf,.png,.jpg,.jpeg,.webp" />
-                   <div class="g-recaptcha"
-    data-sitekey="6LdwqvMtAAAAAMwFye0twTaDgfc4Ffa2hRE0ZL1H"
-     data-callback="enableSelectButton">
-</div>
-
                     <p class="upload-text">Drag and drop LcF, PNG, or JPEG files here</p>
-                    <button id="selectButton" class="btn btn-primary" disabled>Select File</button>
+                    <button id="selectButton" class="btn btn-primary">Select File</button>
                 </div>
             </section>
 
